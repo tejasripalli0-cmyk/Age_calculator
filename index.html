@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator | Pro Edition</title>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #22d3ee;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #a78bfa, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input[type="date"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .calc-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .calc-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Result Section */
+        #result {
+            display: none;
+            margin-top: 1.5rem;
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 5px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .result-box span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .result-box label {
+            font-size: 0.65rem;
+            margin-top: 5px;
+            color: var(--text-muted);
+        }
+
+        .extra-info {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .extra-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .extra-row:last-child { margin-bottom: 0; }
+
+        .zodiac-tag {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        #error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        @media (max-width: 400px) {
+            .grid-results { grid-template-columns: 1fr; }
+            .container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Age Calculator</h1>
+            <p class="subtitle">Discover exactly how long you've been on Earth</p>
+        </header>
+
+        <div class="input-group">
+            <label for="dob">Select Date of Birth</label>
+            <input type="date" id="dob">
+        </div>
+
+        <p id="error">Please select your date of birth!</p>
+
+        <button class="calc-btn" onclick="calculateAge()">Calculate Age</button>
+
+        <div id="result">
+            <div class="grid-results">
+                <div class="result-box">
+                    <span id="years">0</span>
+                    <label>Years</label>
+                </div>
+                <div class="result-box">
+                    <span id="months">0</span>
+                    <label>Months</label>
+                </div>
+                <div class="result-box">
+                    <span id="days">0</span>
+                    <label>Days</label>
+                </div>
+            </div>
+
+            <div class="extra-info">
+                <div class="extra-row">
+                    <span>Zodiac Sign:</span>
+                    <span id="zodiac" class="zodiac-tag">-</span>
+                </div>
+                <div class="extra-row">
+                    <span>Next Birthday In:</span>
+                    <span id="next-birthday">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            const dobValue = document.getElementById('dob').value;
+            const error = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+
+            if (!dobValue) {
+                error.style.display = 'block';
+                resultDiv.style.display = 'none';
+                return;
+            }
+
+            error.style.display = 'none';
+            resultDiv.style.display = 'block';
+
+            const birthDate = new Date(dobValue);
